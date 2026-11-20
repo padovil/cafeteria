@@ -19,6 +19,8 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    .resumen { scroll-margin-top: 16px; }
 
     body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -129,8 +131,9 @@
     .menu { list-style: none; }
     .menu li {
       display: flex;
-      align-items: baseline;
-      gap: 8px;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
       padding: 10px 0;
       border-bottom: 1px dashed var(--linea);
     }
@@ -142,7 +145,127 @@
       color: var(--oliva);
       font-weight: 400;
     }
-    .relleno { flex: 1; }
+    .lado {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .cantidad:empty { display: none; }
+
+    /* Selector de cantidad */
+    .agregar, .paso {
+      min-height: 34px;
+      border: 1.5px solid var(--cafe);
+      background: transparent;
+      color: var(--cafe);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 999px;
+    }
+    .agregar { width: 104px; font-size: 0.85rem; }
+    .agregar:hover, .paso:hover { background: var(--arena); }
+    .control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 104px;
+    }
+    .paso { width: 34px; font-size: 1.1rem; line-height: 1; padding: 0; }
+    .paso.mas { background: var(--cafe); color: #fff; }
+    .paso.mas:hover { background: var(--espresso); }
+    .paso:disabled { opacity: 0.4; cursor: not-allowed; }
+    .num { min-width: 28px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .agregar:focus-visible, .paso:focus-visible, .vaciar:focus-visible { outline: 3px solid var(--terracota); outline-offset: 2px; }
+    .menu li.elegido .producto { color: var(--terracota); }
+
+    /* Conteo en las pestañas */
+    .conteo {
+      display: inline-grid;
+      place-items: center;
+      min-width: 20px;
+      height: 20px;
+      margin-left: 6px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--terracota);
+      color: #fff;
+      font-size: 0.75rem;
+    }
+
+    /* Resumen del prepedido */
+    .resumen {
+      border: 1.5px solid var(--terracota);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+    .resumen-cab { display: flex; justify-content: space-between; align-items: center; }
+    .resumen-cab h2 { margin-bottom: 0; }
+    .vaciar {
+      border: none; background: none; font: inherit; font-size: 0.85rem;
+      color: var(--oliva); text-decoration: underline; cursor: pointer;
+      min-height: 32px; padding: 0 4px;
+    }
+    .lineas { list-style: none; margin-top: 6px; font-size: 0.9rem; }
+    .lineas li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+    .lineas .sub { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--linea);
+      font-weight: 700;
+    }
+    .total strong { font-size: 1.25rem; color: var(--cafe); font-variant-numeric: tabular-nums; }
+    .campos { margin-top: 10px; display: grid; gap: 4px; }
+    .campos label { font-size: 0.8rem; font-weight: 600; color: var(--espresso); }
+    .campos input, .campos select {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 10px;
+      border: 1px solid var(--linea);
+      border-radius: 10px;
+      background: var(--crema);
+      color: var(--espresso);
+      font: inherit;
+      font-size: 16px; /* evita el zoom automático en iPhone */
+    }
+    .campos input:focus-visible, .campos select:focus-visible { outline: 2px solid var(--terracota); outline-offset: 1px; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+    .fila > div { display: grid; gap: 4px; }
+
+    /* Barra fija del pedido (solo celular y tablet) */
+    .barra-pedido {
+      position: fixed;
+      left: 12px; right: 12px; bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 8px 8px 16px;
+      background: var(--espresso);
+      color: var(--arena);
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(59, 42, 32, 0.25);
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+    .barra-pedido[hidden] { display: none; }
+    .barra-pedido a {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--terracota);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .barra-pedido a:focus-visible { outline: 3px solid var(--arena); outline-offset: 2px; }
+    body.con-barra { padding-bottom: 76px; }
     .precio {
       font-weight: 700;
       color: var(--cafe);
@@ -320,6 +443,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .whatsapp, .mapa, .pagos summary::before, .pestanas button { transition: none; }
+      html { scroll-behavior: auto !important; }
     }
 
     /* Celular: compacto para que todo quepa sin scroll */
@@ -365,26 +489,31 @@
       main {
         display: grid;
         grid-template-columns: 1.4fr 1fr;
-        grid-template-rows: auto auto 1fr auto;
-        grid-template-areas:
-          "menu  horario"
-          "menu  pedido"
-          "menu  mapa"
-          "pagos mapa";
         column-gap: 40px;
-        row-gap: 20px;
+        align-items: start;
         padding: 24px 40px 30px;
       }
-      .lateral { display: contents; }
-      .seccion-menu { grid-area: menu; }
-      .horario { grid-area: horario; }
-      .pedido { grid-area: pedido; }
-      .mapa-embebido { grid-area: mapa; }
-      .pagos { grid-area: pagos; margin-top: 0; align-self: end; }
-      .horario { margin-top: 0; padding: 20px; }
+      .col-izq, .lateral { display: flex; flex-direction: column; gap: 20px; }
+      .lateral { align-self: stretch; }
+      .horario, .pedido, .pagos { margin-top: 0; }
       .mapa-embebido { margin-top: 0; flex: 1; height: auto; min-height: 160px; }
-      .pedido { margin-top: 0; }
+      .lado { flex-direction: row; align-items: center; gap: 14px; }
+      .menu li { align-items: center; }
+      .barra-pedido { display: none !important; }
+      body.con-barra { padding-bottom: 24px; }
+      .horario { padding: 20px; }
       .menu li { padding: 10px 0; }
+    }
+
+    /* Celular y tablet: una columna en este orden → menú, horario, pedido, pagos, mapa */
+    @media (max-width: 899px) {
+      main { display: flex; flex-direction: column; }
+      .col-izq, .lateral { display: contents; }
+      .seccion-menu { order: 1; }
+      .horario { order: 2; }
+      .pedido { order: 3; }
+      .pagos { order: 4; }
+      .mapa-embebido { order: 5; }
     }
 
     /* Pantallas grandes */
@@ -397,7 +526,7 @@
     @media print {
       body { background: #fff; padding: 0; }
       .tarjeta { box-shadow: none; border: none; }
-      .mapa-embebido, .copiar, .js .pestanas { display: none; }
+      .mapa-embebido, .copiar, .js .pestanas, .cantidad, .barra-pedido, .vaciar { display: none !important; }
       .js .panel[hidden] { display: block; }
       .js .categoria { position: static; width: auto; height: auto; clip: auto; }
       .whatsapp { background: none; color: var(--espresso); border: 1px solid var(--linea); }
@@ -418,7 +547,8 @@
     </header>
 
     <main>
-      <!-- Menú por categorías. Para agregar un producto, copia un <li> dentro de la categoría -->
+      <div class="col-izq">
+      <!-- Menú por categorías. Para agregar un producto, copia un <li> dentro de la categoría y cambia data-id (único), data-nombre y data-precio (sin puntos) -->
       <section class="seccion-menu" aria-labelledby="t-menu">
         <h2 id="t-menu">Menú</h2>
         <div class="pestanas" role="tablist" aria-label="Categorías del menú">
@@ -431,168 +561,169 @@
         <div class="panel" role="tabpanel" id="panel-calientes" aria-labelledby="tab-calientes">
           <h3 class="categoria">Bebidas calientes</h3>
           <ul class="menu">
-            <li>
+            <li data-id="tinto" data-nombre="Tinto" data-precio="2000">
               <span class="producto">Tinto<span class="detalle">Café colombiano de origen</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$2.000</span>
+              <span class="lado">
+                <span class="precio">$2.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="cafe-con-leche" data-nombre="Café con leche" data-precio="4500">
               <span class="producto">Café con leche<span class="detalle">Grande, 12 oz</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$4.500</span>
+              <span class="lado">
+                <span class="precio">$4.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="capuchino" data-nombre="Capuchino" data-precio="6000">
               <span class="producto">Capuchino<span class="detalle">Con espuma de leche</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$6.000</span>
+              <span class="lado">
+                <span class="precio">$6.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="chocolate-santafereno" data-nombre="Chocolate santafereño" data-precio="7500">
               <span class="producto">Chocolate santafereño<span class="detalle">Con queso campesino</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$7.500</span>
+              <span class="lado">
+                <span class="precio">$7.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
           </ul>
         </div>
         <div class="panel" role="tabpanel" id="panel-frias" aria-labelledby="tab-frias">
           <h3 class="categoria">Bebidas frías</h3>
           <ul class="menu">
-            <li>
+            <li data-id="cafe-frio" data-nombre="Café frío" data-precio="6500">
               <span class="producto">Café frío<span class="detalle">Cold brew con hielo</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$6.500</span>
+              <span class="lado">
+                <span class="precio">$6.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="frappe-de-cafe" data-nombre="Frappé de café" data-precio="8500">
               <span class="producto">Frappé de café<span class="detalle">Con crema batida</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$8.500</span>
+              <span class="lado">
+                <span class="precio">$8.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="limonada-de-coco" data-nombre="Limonada de coco" data-precio="7000">
               <span class="producto">Limonada de coco<span class="detalle">Natural, 16 oz</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$7.000</span>
+              <span class="lado">
+                <span class="precio">$7.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="jugo-natural" data-nombre="Jugo natural" data-precio="5500">
               <span class="producto">Jugo natural<span class="detalle">En agua o en leche</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$5.500</span>
+              <span class="lado">
+                <span class="precio">$5.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
           </ul>
         </div>
         <div class="panel" role="tabpanel" id="panel-comer" aria-labelledby="tab-comer">
           <h3 class="categoria">Para comer</h3>
           <ul class="menu">
-            <li>
+            <li data-id="almojabana" data-nombre="Almojábana" data-precio="3000">
               <span class="producto">Almojábana<span class="detalle">Recién horneada</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$3.000</span>
+              <span class="lado">
+                <span class="precio">$3.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="pan-de-bono" data-nombre="Pan de bono" data-precio="2500">
               <span class="producto">Pan de bono<span class="detalle">Recién horneado</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$2.500</span>
+              <span class="lado">
+                <span class="precio">$2.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="empanada" data-nombre="Empanada" data-precio="3500">
               <span class="producto">Empanada<span class="detalle">De pipián o de carne</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$3.500</span>
+              <span class="lado">
+                <span class="precio">$3.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="sandwich" data-nombre="Sándwich" data-precio="9000">
               <span class="producto">Sándwich<span class="detalle">Jamón y queso en pan artesanal</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$9.000</span>
+              <span class="lado">
+                <span class="precio">$9.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
           </ul>
         </div>
         <div class="panel" role="tabpanel" id="panel-postres" aria-labelledby="tab-postres">
           <h3 class="categoria">Postres</h3>
           <ul class="menu">
-            <li>
+            <li data-id="torta-de-chocolate" data-nombre="Torta de chocolate" data-precio="6500">
               <span class="producto">Torta de chocolate<span class="detalle">Porción</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$6.500</span>
+              <span class="lado">
+                <span class="precio">$6.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="brownie" data-nombre="Brownie" data-precio="5000">
               <span class="producto">Brownie<span class="detalle">Con nueces</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$5.000</span>
+              <span class="lado">
+                <span class="precio">$5.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="cheesecake-de-maracuya" data-nombre="Cheesecake de maracuyá" data-precio="7500">
               <span class="producto">Cheesecake de maracuyá<span class="detalle">Porción</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$7.500</span>
+              <span class="lado">
+                <span class="precio">$7.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="galleta-de-avena" data-nombre="Galleta de avena" data-precio="3000">
               <span class="producto">Galleta de avena<span class="detalle">Grande</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$3.000</span>
+              <span class="lado">
+                <span class="precio">$3.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
           </ul>
         </div>
         <div class="panel" role="tabpanel" id="panel-combos" aria-labelledby="tab-combos">
           <h3 class="categoria">Combos</h3>
           <ul class="menu">
-            <li>
+            <li data-id="combo-estudiante" data-nombre="Combo estudiante" data-precio="4000">
               <span class="producto">Combo estudiante<span class="detalle">Tinto + pan de bono</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$4.000</span>
+              <span class="lado">
+                <span class="precio">$4.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="combo-desayuno" data-nombre="Combo desayuno" data-precio="7000">
               <span class="producto">Combo desayuno<span class="detalle">Café con leche + almojábana</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$7.000</span>
+              <span class="lado">
+                <span class="precio">$7.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="combo-parcial" data-nombre="Combo parcial" data-precio="10000">
               <span class="producto">Combo parcial<span class="detalle">Capuchino + brownie</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$10.000</span>
+              <span class="lado">
+                <span class="precio">$10.000</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
-            <li>
+            <li data-id="combo-almuerzo" data-nombre="Combo almuerzo" data-precio="13500">
               <span class="producto">Combo almuerzo<span class="detalle">Sándwich + jugo natural</span></span>
-              <span class="relleno"></span>
-              <span class="precio">$13.500</span>
+              <span class="lado">
+                <span class="precio">$13.500</span>
+                <span class="cantidad"></span>
+              </span>
             </li>
           </ul>
         </div>
       </section>
-
-      <div class="lateral">
-      <section class="horario" aria-labelledby="t-horario">
-        <h2 id="t-horario">Horario</h2>
-        <dl>
-          <dt>Lunes a viernes</dt><dd>6:30 a.m. – 8:00 p.m.</dd>
-          <dt>Sábados</dt><dd>8:00 a.m. – 2:00 p.m.</dd>
-          <dt>Domingos y festivos</dt><dd class="cerrado">Cerrado</dd>
-        </dl>
-        <!-- Cambia la dirección por la real -->
-        <p class="direccion">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>
-          </svg>
-          <span><strong>Calle 45 # 13-20</strong>, Chapinero, Bogotá</span>
-        </p>
-      </section>
-
-      <div class="pedido">
-      <!-- Cambia 573000000000 por el número real (57 + celular, sin espacios ni +) -->
-      <a class="whatsapp"
-         href="https://wa.me/573000000000?text=Hola%20Caf%C3%A9%20Central%2C%20quiero%20hacer%20un%20pedido"
-         target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.5-.7-2.3-1.5-.6-.6-1-1.2-1.2-1.6-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 2.2.9 2.6.7 3.1.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/>
-        </svg>
-        Pedir por WhatsApp
-      </a>
-      <!-- Cambia el enlace por el de tu negocio en Google Maps (Compartir → Copiar enlace) -->
-      <a class="mapa"
-         href="https://www.google.com/maps/search/?api=1&amp;query=Calle%2045%20%2313-20%2C%20Chapinero%2C%20Bogot%C3%A1"
-         target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 11l18-8-8 18-2-8-8-2z"/>
-        </svg>
-        Cómo llegar
-      </a>
-      <p class="nota">Pide antes de clase y recoge sin hacer fila</p>
-      </div>
 
       <!-- Formas de pago: cambia los números y datos de las cuentas por los reales -->
       <section class="pagos" aria-labelledby="t-pagos">
@@ -630,6 +761,82 @@
         </details>
         <p class="sr-only" aria-live="polite" id="estado-copia"></p>
       </section>
+      </div>
+
+
+      <div class="lateral">
+      <section class="horario" aria-labelledby="t-horario">
+        <h2 id="t-horario">Horario</h2>
+        <dl>
+          <dt>Lunes a viernes</dt><dd>6:30 a.m. – 8:00 p.m.</dd>
+          <dt>Sábados</dt><dd>8:00 a.m. – 2:00 p.m.</dd>
+          <dt>Domingos y festivos</dt><dd class="cerrado">Cerrado</dd>
+        </dl>
+        <!-- Cambia la dirección por la real -->
+        <p class="direccion">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>
+          </svg>
+          <span><strong>Calle 45 # 13-20</strong>, Chapinero, Bogotá</span>
+        </p>
+      </section>
+
+      <div class="pedido">
+      <section class="resumen" id="resumen" aria-labelledby="t-resumen" hidden>
+        <div class="resumen-cab">
+          <h2 id="t-resumen">Tu prepedido</h2>
+          <button type="button" class="vaciar">Vaciar</button>
+        </div>
+        <ul class="lineas"></ul>
+        <p class="total"><span>Total</span><strong id="total">$0</strong></p>
+        <div class="campos">
+          <label for="f-nombre">Nombre para el pedido</label>
+          <input id="f-nombre" type="text" autocomplete="given-name" maxlength="40" placeholder="Ej.: Laura">
+          <div class="fila">
+            <div>
+              <label for="f-recoger">Recoger</label>
+              <select id="f-recoger">
+                <option>Cuanto antes</option>
+                <option>En 15 min</option>
+                <option>En 30 min</option>
+                <option>En 1 hora</option>
+              </select>
+            </div>
+            <div>
+              <label for="f-pago">Pago</label>
+              <select id="f-pago">
+                <option>Efectivo</option>
+                <option>Nequi</option>
+                <option>Daviplata</option>
+                <option>Bre-B</option>
+                <option>Bancolombia</option>
+                <option>Tarjeta en caja</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Cambia 573000000000 por el número real (57 + celular, sin espacios ni +) -->
+      <a class="whatsapp"
+         href="https://wa.me/573000000000?text=Hola%20Caf%C3%A9%20Central%2C%20quiero%20hacer%20un%20pedido"
+         target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.5-.7-2.3-1.5-.6-.6-1-1.2-1.2-1.6-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 2.2.9 2.6.7 3.1.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/>
+        </svg>
+        <span id="wa-texto">Pedir por WhatsApp</span>
+      </a>
+      <!-- Cambia el enlace por el de tu negocio en Google Maps (Compartir → Copiar enlace) -->
+      <a class="mapa"
+         href="https://www.google.com/maps/search/?api=1&amp;query=Calle%2045%20%2313-20%2C%20Chapinero%2C%20Bogot%C3%A1"
+         target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 11l18-8-8 18-2-8-8-2z"/>
+        </svg>
+        Cómo llegar
+      </a>
+      <p class="nota">Pide antes de clase y recoge sin hacer fila</p>
+      </div>
+
 
       <!-- Mapa: cambia la dirección en q=... por la real (o pega el código de "Insertar un mapa" de Google Maps) -->
       <div class="mapa-embebido">
@@ -643,6 +850,13 @@
       </div>
     </main>
   </div>
+
+  <!-- Barra fija (celular): aparece cuando hay productos en el prepedido -->
+  <div class="barra-pedido" hidden>
+    <span><span id="barra-conteo">0 productos</span> · <strong id="barra-total">$0</strong></span>
+    <a href="#resumen">Ver pedido</a>
+  </div>
+  <p class="sr-only" aria-live="polite" id="estado-pedido"></p>
 
   <script>
     // Pestañas del menú (patrón accesible: flechas, Inicio y Fin para moverse)
@@ -672,6 +886,153 @@
     pestanas.forEach((p, i) => {
       if (i > 0) document.getElementById(p.getAttribute('aria-controls')).hidden = true;
     });
+
+    // ---------- Prepedido ----------
+    const fmt = (n) => '$' + n.toLocaleString('es-CO');
+    const enlaceWa = document.querySelector('.whatsapp');
+    const urlBase = new URL(enlaceWa.href);           // el número se toma del enlace de WhatsApp
+    const mensajeGeneral = urlBase.searchParams.get('text');
+    const productos = [...document.querySelectorAll('.menu li[data-id]')].map((li) => ({
+      li,
+      id: li.dataset.id,
+      nombre: li.dataset.nombre,
+      precio: Number(li.dataset.precio),
+      panel: li.closest('.panel').id,
+    }));
+    const MAX = 20;
+    const CLAVE = 'cafe-central-prepedido';
+    const campos = ['f-nombre', 'f-recoger', 'f-pago'].map((id) => document.getElementById(id));
+    const resumen = document.getElementById('resumen');
+    const barra = document.querySelector('.barra-pedido');
+    const anuncio = document.getElementById('estado-pedido');
+    let carrito = {};
+
+    // Recuperar el prepedido guardado en este navegador
+    try {
+      const guardado = JSON.parse(localStorage.getItem(CLAVE) || '{}');
+      carrito = guardado.carrito || {};
+      campos.forEach((c) => {
+        if (guardado[c.id]) c.value = guardado[c.id];
+        if (c.tagName === 'SELECT' && c.selectedIndex < 0) c.selectedIndex = 0; // opción que ya no existe
+      });
+    } catch {}
+
+    function guardar() {
+      try {
+        const datos = { carrito };
+        campos.forEach((c) => { datos[c.id] = c.value; });
+        localStorage.setItem(CLAVE, JSON.stringify(datos));
+      } catch {}
+    }
+
+    function cambiar(id, delta) {
+      const actual = carrito[id] || 0;
+      const nuevo = Math.max(0, Math.min(MAX, actual + delta));
+      if (nuevo === 0) delete carrito[id]; else carrito[id] = nuevo;
+      const prod = productos.find((p) => p.id === id);
+      anuncio.textContent = nuevo === 0 ? `${prod.nombre} quitado del pedido` : `${prod.nombre}: ${nuevo}`;
+      pintar(id);
+      guardar();
+    }
+
+    function pintarControl(p) {
+      const caja = p.li.querySelector('.cantidad');
+      const n = carrito[p.id] || 0;
+      p.li.classList.toggle('elegido', n > 0);
+      if (n === 0) {
+        caja.innerHTML = `<button type="button" class="agregar" aria-label="Agregar ${p.nombre}">Agregar</button>`;
+        caja.firstChild.onclick = () => { cambiar(p.id, 1); caja.querySelector('.mas').focus(); };
+      } else {
+        caja.innerHTML = `<span class="control">
+            <button type="button" class="paso menos" aria-label="Quitar una unidad de ${p.nombre}">−</button>
+            <span class="num" aria-hidden="true">${n}</span>
+            <button type="button" class="paso mas" aria-label="Agregar una unidad de ${p.nombre}" ${n >= MAX ? 'disabled' : ''}>+</button>
+          </span>`;
+        caja.querySelector('.menos').onclick = () => {
+          const quedaVacio = (carrito[p.id] || 0) === 1;
+          cambiar(p.id, -1);
+          (quedaVacio ? caja.querySelector('.agregar') : caja.querySelector('.menos')).focus();
+        };
+        caja.querySelector('.mas').onclick = () => { cambiar(p.id, 1); caja.querySelector('.mas').focus(); };
+      }
+    }
+
+    function pintar(soloId) {
+      productos.forEach((p) => { if (!soloId || p.id === soloId) pintarControl(p); });
+
+      const elegidos = productos.filter((p) => carrito[p.id]);
+      const unidades = elegidos.reduce((t, p) => t + carrito[p.id], 0);
+      const total = elegidos.reduce((t, p) => t + carrito[p.id] * p.precio, 0);
+
+      // Conteo por pestaña
+      pestanas.forEach((tab) => {
+        const panel = tab.getAttribute('aria-controls');
+        const n = elegidos.filter((p) => p.panel === panel).reduce((t, p) => t + carrito[p.id], 0);
+        let badge = tab.querySelector('.conteo');
+        if (n && !badge) { badge = document.createElement('span'); badge.className = 'conteo'; badge.setAttribute('aria-hidden', 'true'); tab.append(badge); }
+        if (badge) { if (n) badge.textContent = n; else badge.remove(); }
+      });
+
+      // Resumen
+      resumen.hidden = unidades === 0;
+      resumen.querySelector('.lineas').innerHTML = elegidos.map((p) =>
+        `<li><span>${carrito[p.id]} × ${p.nombre}</span><span class="sub">${fmt(carrito[p.id] * p.precio)}</span></li>`).join('');
+      document.getElementById('total').textContent = fmt(total);
+
+      // Barra fija
+      const texto = unidades === 1 ? '1 producto' : `${unidades} productos`;
+      document.getElementById('barra-conteo').textContent = texto;
+      document.getElementById('barra-total').textContent = fmt(total);
+      actualizarBarra();
+
+      // Botón y mensaje de WhatsApp
+      document.getElementById('wa-texto').textContent = unidades ? `Enviar prepedido · ${fmt(total)}` : 'Pedir por WhatsApp';
+      actualizarEnlace(elegidos, total);
+    }
+
+    function actualizarEnlace(elegidos, total) {
+      elegidos = elegidos || productos.filter((p) => carrito[p.id]);
+      total = total ?? elegidos.reduce((t, p) => t + carrito[p.id] * p.precio, 0);
+      let mensaje = mensajeGeneral;
+      if (elegidos.length) {
+        const [nombre, recoger, pago] = campos.map((c) => c.value.trim());
+        const lineas = [
+          'Hola Café Central, quiero hacer este prepedido:',
+          '',
+          ...elegidos.map((p) => `• ${carrito[p.id]} × ${p.nombre} — ${fmt(carrito[p.id] * p.precio)}`),
+          '',
+          `*Total: ${fmt(total)}*`,
+        ];
+        if (nombre) lineas.push(`Nombre: ${nombre}`);
+        lineas.push(`Recoger: ${recoger}`, `Pago: ${pago}`);
+        if (!['Efectivo', 'Tarjeta en caja'].includes(pago)) lineas.push('Envío el comprobante por este chat.');
+        mensaje = lineas.join('\n');
+      }
+      enlaceWa.href = `${urlBase.origin}${urlBase.pathname}?text=${encodeURIComponent(mensaje)}`;
+    }
+
+    // La barra fija se oculta cuando el resumen ya está a la vista
+    let resumenVisible = false;
+    function actualizarBarra() {
+      const mostrar = !resumen.hidden && !resumenVisible;
+      barra.hidden = !mostrar;
+      document.body.classList.toggle('con-barra', !resumen.hidden);
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => { resumenVisible = e.isIntersecting; actualizarBarra(); }, { threshold: 0.3 })
+        .observe(resumen);
+    }
+
+    campos.forEach((c) => c.addEventListener('input', () => { actualizarEnlace(); guardar(); }));
+    document.querySelector('.vaciar').addEventListener('click', () => {
+      carrito = {};
+      guardar();
+      pintar();
+      anuncio.textContent = 'Prepedido vaciado';
+      document.getElementById('t-menu').scrollIntoView({ block: 'start' });
+      pestanas.find((t) => t.getAttribute('aria-selected') === 'true').focus();
+    });
+    pintar();
 
     // Botones "Copiar" de las cuentas de pago
     const estado = document.getElementById('estado-copia');
